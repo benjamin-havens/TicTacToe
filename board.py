@@ -6,8 +6,8 @@ from constants import EMPTY, X, O, TIC_TAC_TOE_DISPLAY
 class TicTacToeBoard:
     def __init__(self):
         self.state = None
-        self.next_move = None
-        self.next_next_move = None
+        self.next_player = None
+        self.next_next_player = None
         self.is_game_over = None
         self.move_history = None
         self.winning_player = None
@@ -15,8 +15,8 @@ class TicTacToeBoard:
 
     def reset(self):
         self.state = np.full((3, 3), EMPTY.value)
-        self.next_move = X
-        self.next_next_move = O
+        self.next_player = X
+        self.next_next_player = O
         self.is_game_over = False
         self.move_history = []
         self.winning_player = None
@@ -26,7 +26,7 @@ class TicTacToeBoard:
         assert not self.is_game_over, "Attempted move after game over without resetting"
         assert self.state[row, column] == EMPTY.value, "Attempted repeat move without resetting"
         self.move_history.append((row, column))
-        self.state[row, column] = self.next_move.value
+        self.state[row, column] = self.next_player.value
         self._switch_active_player()
         self._check_game_over()
 
@@ -65,7 +65,7 @@ class TicTacToeBoard:
             self.is_game_over = True
 
     def _switch_active_player(self):
-        self.next_move, self.next_next_move = self.next_next_move, self.next_move
+        self.next_player, self.next_next_player = self.next_next_player, self.next_player
 
     def __str__(self):
         s = "\n|‾‾‾|‾‾‾|‾‾‾|\n"
