@@ -5,7 +5,7 @@ from constants import EMPTY, X, O, TIC_TAC_TOE_DISPLAY
 
 class TicTacToeBoard:
     def __init__(self):
-        self.board = None
+        self.state = None
         self.next_move = None
         self.next_next_move = None
         self.is_game_over = None
@@ -13,7 +13,7 @@ class TicTacToeBoard:
         self.reset()
 
     def reset(self):
-        self.board = np.full((3, 3), EMPTY.value)
+        self.state = np.full((3, 3), EMPTY.value)
         self.next_move = X
         self.next_next_move = O
         self.is_game_over = False
@@ -22,32 +22,32 @@ class TicTacToeBoard:
     def play_move(self, row, column):
         assert 0 <= row < 3 and 0 <= column < 3, "Attempted move outside board"
         assert not self.is_game_over, "Attempted move after game over without resetting"
-        assert self.board[row, column] == EMPTY.value, "Attempted repeat move without resetting"
+        assert self.state[row, column] == EMPTY.value, "Attempted repeat move without resetting"
         self.move_history.append((row, column))
-        self.board[row, column] = self.next_move.value
+        self.state[row, column] = self.next_move.value
         self._switch_active_player()
         self._check_game_over()
 
     def undo_move(self):
         assert len(self.move_history), "Attempted to undo move without making any"
         last_row, last_column = self.move_history.pop()
-        self.board[last_row, last_column] = EMPTY.value
+        self.state[last_row, last_column] = EMPTY.value
         self._switch_active_player()
         self.is_game_over = False
 
     def _check_game_over(self):
         for player in (X, O):
             # Check rows:
-            if any(all(square == player.value for square in row) for row in self.board):
+            if any(all(square == player.value for square in row) for row in self.state):
                 self.is_game_over = True
                 print(f"{player.name} wins!")
             # Check columns
-            if any(all(square == player.value for square in column) for column in self.board.T):
+            if any(all(square == player.value for square in column) for column in self.state.T):
                 self.is_game_over = True
                 print(f"{player.name} wins!")
             # Check diagonals
-            if (all(self.board[i, i] == player.value for i in range(3)) or
-                    all(self.board[i, 2 - i] == player.value for i in range(3))):
+            if (all(self.state[i, i] == player.value for i in range(3)) or
+                    all(self.state[i, 2 - i] == player.value for i in range(3))):
                 self.is_game_over = True
                 print(f"{player.name} wins!")
 
@@ -60,7 +60,7 @@ class TicTacToeBoard:
         for row in range(3):
             for column in range(3):
                 s += "| "
-                s += TIC_TAC_TOE_DISPLAY[self.board[row, column]]
+                s += TIC_TAC_TOE_DISPLAY[self.state[row, column]]
                 s += " "
             s += "|\n"
             s += "|‾‾‾|‾‾‾|‾‾‾|\n" if row < 2 else "‾‾‾‾‾‾‾‾‾‾‾‾‾"
@@ -68,7 +68,7 @@ class TicTacToeBoard:
         return s
 
     def __hash__(self):
-        base_3_index = "".join(str(value) for value in self.board.flatten())
+        base_3_index = "".join(str(value) for value in self.state.flatten())
         return int(base_3_index, 3)
 
 
@@ -150,6 +150,9 @@ if __name__ == "__main__":
     # Play O in the bottom right (O should win)
     board.play_move(2, 2)
 
+    print(board)
+    print(hash(board))
+    board.reset()
     print(board)
     print(hash(board))
 
