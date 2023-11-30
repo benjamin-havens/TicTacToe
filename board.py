@@ -1,0 +1,155 @@
+import numpy as np
+
+from constants import EMPTY, X, O, TIC_TAC_TOE_DISPLAY
+
+
+class TicTacToeBoard:
+    def __init__(self):
+        self.board = None
+        self.next_move = None
+        self.next_next_move = None
+        self.is_game_over = None
+        self.move_history = None
+        self.reset()
+
+    def reset(self):
+        self.board = np.full((3, 3), EMPTY.value)
+        self.next_move = X
+        self.next_next_move = O
+        self.is_game_over = False
+        self.move_history = []
+
+    def play_move(self, row, column):
+        assert 0 <= row < 3 and 0 <= column < 3, "Attempted move outside board"
+        assert not self.is_game_over, "Attempted move after game over without resetting"
+        assert self.board[row, column] == EMPTY.value, "Attempted repeat move without resetting"
+        self.move_history.append((row, column))
+        self.board[row, column] = self.next_move.value
+        self._switch_active_player()
+        self._check_game_over()
+
+    def undo_move(self):
+        assert len(self.move_history), "Attempted to undo move without making any"
+        last_row, last_column = self.move_history.pop()
+        self.board[last_row, last_column] = EMPTY.value
+        self._switch_active_player()
+        self.is_game_over = False
+
+    def _check_game_over(self):
+        for player in (X, O):
+            # Check rows:
+            if any(all(square == player.value for square in row) for row in self.board):
+                self.is_game_over = True
+                print(f"{player.name} wins!")
+            # Check columns
+            if any(all(square == player.value for square in column) for column in self.board.T):
+                self.is_game_over = True
+                print(f"{player.name} wins!")
+            # Check diagonals
+            if (all(self.board[i, i] == player.value for i in range(3)) or
+                    all(self.board[i, 2 - i] == player.value for i in range(3))):
+                self.is_game_over = True
+                print(f"{player.name} wins!")
+
+    def _switch_active_player(self):
+        self.next_move, self.next_next_move = self.next_next_move, self.next_move
+
+
+    def __str__(self):
+        s = "\n|‾‾‾|‾‾‾|‾‾‾|\n"
+        for row in range(3):
+            for column in range(3):
+                s += "| "
+                s += TIC_TAC_TOE_DISPLAY[self.board[row, column]]
+                s += " "
+            s += "|\n"
+            s += "|‾‾‾|‾‾‾|‾‾‾|\n" if row < 2 else "‾‾‾‾‾‾‾‾‾‾‾‾‾"
+        s += "\n"
+        return s
+
+    def __hash__(self):
+        base_3_index = "".join(str(value) for value in self.board.flatten())
+        return int(base_3_index, 3)
+
+
+if __name__ == "__main__":
+    # Run some basic tests to ensure board functionality
+    board = TicTacToeBoard()
+
+    # Try to undo a move without making any
+    try:
+        board.undo_move()
+    except AssertionError:
+        pass
+    else:
+        assert False
+
+    # Play X in the center
+    board.play_move(1, 1)
+
+    # Try to play O in the center
+    try:
+        board.play_move(1, 1)
+    except AssertionError:
+        pass
+    else:
+        assert False
+
+    # Play O in the bottom center
+    board.play_move(2, 1)
+
+    # Try to play X outside the board
+    try:
+        board.play_move(3,1)
+    except AssertionError:
+        pass
+    else:
+        assert False
+
+    # Play X in the top left
+    board.play_move(0,0)
+
+    # Play O in the top center
+    board.play_move(0,1)
+
+    # Play X in the bottom right (X should win here)
+    board.play_move(2,2)
+
+    # Try to play a move after the game is over
+    try:
+        board.play_move(0, 0)
+    except AssertionError:
+        pass
+    else:
+        assert False
+
+    # Print the board after X wins
+    print(board)
+
+    # Undo a few moves and print
+    board.undo_move()
+    board.undo_move()
+    board.undo_move()
+    print(board)
+
+    # Play X in the bottom left
+    board.play_move(2, 0)
+
+    # Play O in the right center
+    board.play_move(1, 2)
+
+    # Play X in the left center
+    board.play_move(1, 0)
+
+    # Play O in the top right
+    board.play_move(0, 2)
+
+    # Play X in the top center
+    board.play_move(0, 1)
+
+    # Play O in the bottom right (O should win)
+    board.play_move(2, 2)
+
+    print(board)
+    print(hash(board))
+
