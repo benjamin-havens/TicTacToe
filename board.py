@@ -39,6 +39,7 @@ class TicTacToeBoard:
         self.winning_player = None
 
     def _check_game_over(self):
+        # Check for player win
         for player in (X, O):
             # Check rows:
             if any(all(square == player.value for square in row) for row in self.state):
@@ -53,6 +54,10 @@ class TicTacToeBoard:
                     all(self.state[i, 2 - i] == player.value for i in range(3))):
                 self.is_game_over = True
                 self.winning_player = player
+
+        # Check for cat's game
+        if not self.is_game_over and not any(value == EMPTY.value for value in self.state.flatten()):
+            self.is_game_over = True
 
     def _switch_active_player(self):
         self.next_move, self.next_next_move = self.next_next_move, self.next_move
