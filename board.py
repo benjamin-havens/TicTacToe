@@ -38,6 +38,11 @@ class TicTacToeBoard:
         self.is_game_over = False
         self.winning_player = None
 
+    def get_possible_moves(self):
+        if self.is_game_over:
+            return []
+        return [(row, column) for row, column in zip(range(3), range(3)) if self.state[row, column] == EMPTY.value]
+
     def _check_game_over(self):
         # Check for player win
         for player in (X, O):
@@ -61,7 +66,6 @@ class TicTacToeBoard:
 
     def _switch_active_player(self):
         self.next_move, self.next_next_move = self.next_next_move, self.next_move
-
 
     def __str__(self):
         s = "\n|‾‾‾|‾‾‾|‾‾‾|\n"
@@ -108,20 +112,20 @@ if __name__ == "__main__":
 
     # Try to play X outside the board
     try:
-        board.play_move(3,1)
+        board.play_move(3, 1)
     except AssertionError:
         pass
     else:
         assert False
 
     # Play X in the top left
-    board.play_move(0,0)
+    board.play_move(0, 0)
 
     # Play O in the top center
-    board.play_move(0,1)
+    board.play_move(0, 1)
 
     # Play X in the bottom right (X should win here)
-    board.play_move(2,2)
+    board.play_move(2, 2)
     assert board.winning_player == X
     print(board)
 
@@ -132,7 +136,6 @@ if __name__ == "__main__":
         pass
     else:
         assert False
-
 
     # Undo a few moves and print
     board.undo_move()
@@ -164,4 +167,3 @@ if __name__ == "__main__":
     # Reset and print empty board
     board.reset()
     print(board)
-
