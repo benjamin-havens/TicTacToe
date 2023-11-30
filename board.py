@@ -10,6 +10,7 @@ class TicTacToeBoard:
         self.next_next_move = None
         self.is_game_over = None
         self.move_history = None
+        self.winning_player = None
         self.reset()
 
     def reset(self):
@@ -18,6 +19,7 @@ class TicTacToeBoard:
         self.next_next_move = O
         self.is_game_over = False
         self.move_history = []
+        self.winning_player = None
 
     def play_move(self, row, column):
         assert 0 <= row < 3 and 0 <= column < 3, "Attempted move outside board"
@@ -34,22 +36,23 @@ class TicTacToeBoard:
         self.state[last_row, last_column] = EMPTY.value
         self._switch_active_player()
         self.is_game_over = False
+        self.winning_player = None
 
     def _check_game_over(self):
         for player in (X, O):
             # Check rows:
             if any(all(square == player.value for square in row) for row in self.state):
                 self.is_game_over = True
-                print(f"{player.name} wins!")
+                self.winning_player = player
             # Check columns
             if any(all(square == player.value for square in column) for column in self.state.T):
                 self.is_game_over = True
-                print(f"{player.name} wins!")
+                self.winning_player = player
             # Check diagonals
             if (all(self.state[i, i] == player.value for i in range(3)) or
                     all(self.state[i, 2 - i] == player.value for i in range(3))):
                 self.is_game_over = True
-                print(f"{player.name} wins!")
+                self.winning_player = player
 
     def _switch_active_player(self):
         self.next_move, self.next_next_move = self.next_next_move, self.next_move
@@ -114,6 +117,8 @@ if __name__ == "__main__":
 
     # Play X in the bottom right (X should win here)
     board.play_move(2,2)
+    assert board.winning_player == X
+    print(board)
 
     # Try to play a move after the game is over
     try:
@@ -123,11 +128,10 @@ if __name__ == "__main__":
     else:
         assert False
 
-    # Print the board after X wins
-    print(board)
 
     # Undo a few moves and print
     board.undo_move()
+    assert board.winning_player is None
     board.undo_move()
     board.undo_move()
     print(board)
@@ -149,10 +153,10 @@ if __name__ == "__main__":
 
     # Play O in the bottom right (O should win)
     board.play_move(2, 2)
-
+    assert board.winning_player == O
     print(board)
-    print(hash(board))
+
+    # Reset and print empty board
     board.reset()
     print(board)
-    print(hash(board))
 
