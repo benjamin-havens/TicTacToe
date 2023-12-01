@@ -108,7 +108,7 @@ class TicTacToeBoard:
     def __eq__(self, other):
         if not isinstance(other, TicTacToeBoard):
             return False
-        return self.state == other.state
+        return (self.state == other.state).all()
 
 
 if __name__ == "__main__":
