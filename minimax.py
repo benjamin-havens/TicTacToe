@@ -1,7 +1,8 @@
 from functools import cache
+import numpy as np
 
 from board import TicTacToeBoard
-from constants import X, O, X_WINNING, O_WINNING
+from constants import X, O, WINNING_SCORE
 
 
 def TicTacToeCriterion(player, current_evaluation, old_best):
@@ -38,10 +39,11 @@ def evaluate_tictactoe_board(board: TicTacToeBoard):
     if board.is_game_over:
         if board.winning_player is None:
             return 0
+        depth = 9 - board.n_empty()
         if board.winning_player == X:
-            return X_WINNING
+            return WINNING_SCORE - depth
         if board.winning_player == O:
-            return O_WINNING
+            return -(WINNING_SCORE - depth)
 
     # X is maximizing player by virtue of the above, O is minimizing
     best_outcome = float("-inf") if board.next_player == X else float("inf")
@@ -58,8 +60,17 @@ def evaluate_tictactoe_board(board: TicTacToeBoard):
 
 
 if __name__ == "__main__":
+    # Test minimax player
     board = TicTacToeBoard()
+
+    # Play against self--must result in cat's game
     while not board.is_game_over:
         best_move = get_best_tictactoe_move(board)
         board.play_move(*best_move)
     print(board)
+
+    # Load a lost state for O and get O's move. It should block
+    state = np.array([[0, 1, 0], [0, 0, 1], [2, 2, 1]])
+    board.load_state(state, O)
+    print(board)
+    print(get_best_tictactoe_move(board))
