@@ -28,6 +28,7 @@ class TicTacToeGamePlayer:
         self.board = TicTacToeBoard()
 
     def play(self):
+        self.board.reset()
         # Make rules clear.
         self._maybe_print("Press enter at each stage to move on.\n"
                           f"Beginning a game between {self.player_X_name} as X and {self.player_O_name} as O!\n\n",
@@ -51,7 +52,6 @@ class TicTacToeGamePlayer:
             self._maybe_print(f"Player {self.board.winning_player.name} wins!", clear=False)
         else:
             self._maybe_print("It's a tie!", clear=False)
-        self.board.reset()
 
     def _maybe_print(self, s, clear=True):
         if not self.silent:
