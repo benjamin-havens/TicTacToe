@@ -68,6 +68,7 @@ if __name__ == "__main__":
         best_move = get_best_tictactoe_move(board)
         board.play_move(*best_move)
     print(board)
+    print(board.move_history)
 
     # Load a lost state for O and get O's move. It should block
     state = np.array([[0, 1, 0], [0, 0, 1], [2, 2, 1]])
