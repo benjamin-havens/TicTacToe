@@ -51,7 +51,7 @@ class TicTacToeGamePlayer:
     def play(self):
         # Make rules clear.
         self._maybe_print("Press enter at each stage to move on.\n"
-                          f"Beginning a game between {self.player_X_name} as X and {self.player_O_name} as O!",
+                          f"Beginning a game between {self.player_X_name} as X and {self.player_O_name} as O!\n\n",
                           clear=False)
 
         player, next_player = self.player_X, self.player_O
