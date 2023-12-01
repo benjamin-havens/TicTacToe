@@ -54,6 +54,9 @@ class TicTacToeBoard:
         return len(
             [(row, column) for row, column in product(range(3), range(3)) if self.state[row, column] == EMPTY.value])
 
+    def depth(self):
+        return 9 - self.n_empty()
+
     def _check_game_over(self):
         # Check for player win
         for player in (X, O):
