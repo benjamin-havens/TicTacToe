@@ -1,5 +1,6 @@
-import numpy as np
 from itertools import product
+
+import numpy as np
 
 from constants import EMPTY, X, O, TIC_TAC_TOE_DISPLAY
 
@@ -42,6 +43,16 @@ class TicTacToeBoard:
         if self.is_game_over:
             return []
         return [(row, column) for row, column in product(range(3), range(3)) if self.state[row, column] == EMPTY.value]
+
+    def load_state(self, state, active_player=X):
+        self.state = state
+        self.next_player = active_player
+        self.next_next_player = X if active_player == O else O
+        self._check_game_over()
+
+    def n_empty(self):
+        return len(
+            [(row, column) for row, column in product(range(3), range(3)) if self.state[row, column] == EMPTY.value])
 
     def _check_game_over(self):
         # Check for player win
@@ -177,6 +188,7 @@ if __name__ == "__main__":
     assert board.winning_player == O
     print(board)
 
-    # Reset and print empty board
-    board.reset()
+    # Load a given state and print
+    state = np.array([[1, 1, 0], [2, 2, 0], [0, 0, 0]])
+    board.load_state(state, X)
     print(board)
