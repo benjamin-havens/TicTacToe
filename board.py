@@ -1,4 +1,5 @@
 import numpy as np
+from itertools import product
 
 from constants import EMPTY, X, O, TIC_TAC_TOE_DISPLAY
 
@@ -35,13 +36,12 @@ class TicTacToeBoard:
         last_row, last_column = self.move_history.pop()
         self.state[last_row, last_column] = EMPTY.value
         self._switch_active_player()
-        self.is_game_over = False
-        self.winning_player = None
+        self._check_game_over()  # Resets winning_player and is_game_over
 
     def get_possible_moves(self):
         if self.is_game_over:
             return []
-        return [(row, column) for row, column in zip(range(3), range(3)) if self.state[row, column] == EMPTY.value]
+        return [(row, column) for row, column in product(range(3), range(3)) if self.state[row, column] == EMPTY.value]
 
     def _check_game_over(self):
         # Check for player win
@@ -50,19 +50,27 @@ class TicTacToeBoard:
             if any(all(square == player.value for square in row) for row in self.state):
                 self.is_game_over = True
                 self.winning_player = player
+                return
             # Check columns
             if any(all(square == player.value for square in column) for column in self.state.T):
                 self.is_game_over = True
                 self.winning_player = player
+                return
             # Check diagonals
             if (all(self.state[i, i] == player.value for i in range(3)) or
                     all(self.state[i, 2 - i] == player.value for i in range(3))):
                 self.is_game_over = True
                 self.winning_player = player
+                return
 
         # Check for cat's game
         if not self.is_game_over and not any(value == EMPTY.value for value in self.state.flatten()):
             self.is_game_over = True
+            self.winning_player = None
+            return
+
+        self.is_game_over = False
+        self.winning_player = None
 
     def _switch_active_player(self):
         self.next_player, self.next_next_player = self.next_next_player, self.next_player
@@ -82,6 +90,11 @@ class TicTacToeBoard:
     def __hash__(self):
         base_3_index = "".join(str(value) for value in self.state.flatten())
         return int(base_3_index, 3)
+
+    def __eq__(self, other):
+        if not isinstance(other, TicTacToeBoard):
+            return False
+        return self.state == other.state
 
 
 if __name__ == "__main__":
