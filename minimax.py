@@ -11,7 +11,7 @@ def TicTacToeCriterion(player, current_evaluation, old_best):
     return current_evaluation > old_best if player == X else current_evaluation < old_best
 
 
-def get_best_move(board: TicTacToeBoard):
+def get_best_tictactoe_move(board: TicTacToeBoard):
     assert not board.is_game_over, "Attempted to get best move in a finished game."
 
     best_outcome = float("-inf") if board.next_player == X else float("inf")
@@ -23,7 +23,7 @@ def get_best_move(board: TicTacToeBoard):
 
         # Play the move, evaluate, undo the move
         board.play_move(row, column)
-        evaluation = evaluate(board)
+        evaluation = evaluate_tictactoe_board(board)
         board.undo_move()
 
         # Update best found
@@ -34,7 +34,7 @@ def get_best_move(board: TicTacToeBoard):
 
 
 @cache
-def evaluate(board: TicTacToeBoard):
+def evaluate_tictactoe_board(board: TicTacToeBoard):
     if board.is_game_over:
         if board.winning_player is None:
             return 0
@@ -48,7 +48,7 @@ def evaluate(board: TicTacToeBoard):
     for row, column in board.get_possible_moves():
         # Play the move, evaluate, undo the move
         board.play_move(row, column)
-        evaluation = evaluate(board)
+        evaluation = evaluate_tictactoe_board(board)
         board.undo_move()
 
         # Update best found
@@ -60,6 +60,6 @@ def evaluate(board: TicTacToeBoard):
 if __name__ == "__main__":
     board = TicTacToeBoard()
     while not board.is_game_over:
-        best_move = get_best_move(board)
+        best_move = get_best_tictactoe_move(board)
         board.play_move(*best_move)
     print(board)
