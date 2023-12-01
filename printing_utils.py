@@ -11,7 +11,7 @@ def require_input_and_clear(prompt):
     """Print the prompt, get user input, clear the prompt, and return the input."""
     prompt = str(prompt)
     user_input = input(prompt)
-    new_lines = prompt.count("\n")
+    new_lines = prompt.count("\n") + 1
     for i in range(new_lines):
         delete_last_line()
     return user_input

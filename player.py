@@ -1,7 +1,6 @@
 from board import TicTacToeBoard
 from minimax import get_best_tictactoe_move
 from printing_utils import require_input_and_clear
-from constants import X, O
 
 
 def get_human_tictactoe_move(board: TicTacToeBoard):
@@ -51,7 +50,7 @@ class TicTacToeGamePlayer:
         while not self.board.is_game_over:
             self._maybe_print(self.board)
             move = player(self.board)
-            self._maybe_print(f"Player {self.board.next_player.name} chose to play at {move}.")
+            self._maybe_print(f"Player {self.board.next_player.name} chose to play at {move[0] + 1, move[1] + 1}.")
             self.board.play_move(*move)
             player, next_player = next_player, player
         self._maybe_print(f"Player {self.board.winning_player.name} wins!")
@@ -59,7 +58,6 @@ class TicTacToeGamePlayer:
     def _maybe_print(self, s):
         if not self.silent:
             require_input_and_clear(s)
-
 
 
 if __name__ == "__main__":
