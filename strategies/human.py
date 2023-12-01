@@ -1,4 +1,6 @@
-def get_human_tictactoe_move(board: TicTacToeBoard):
+from printing_utils import require_input_and_clear
+
+def get_human_tictactoe_move(board):
     valid_moves = board.get_possible_moves()
 
     while True:
