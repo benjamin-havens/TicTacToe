@@ -8,9 +8,11 @@ The centerpiece of the minimax file is `get_best_tictactoe_move`, which intakes 
 The player utility, `TicTacToeGamePlayer`, allows arbitrary callables to be used as a tic-tac-toe strategy, provided they can accept a `TicTacToeBoard` as input and return a `(row, column)` tuple.
 It has rudimentary UI through the terminal, which can be disabled for silence.
 
+Due to the simple nature of the problem, extensive testing was not performed; however, just about every script, if run individually, has a little test script at the bottom to ensure minimal functionality. 
+
 ### TODO
 - Doc strings
 - Little RL agent :)
 
 ### Credits
-Thanks to [never stop building](https://www.neverstopbuilding.com/blog/minimax) for help improving the minimax algorithm, so that delays losing for as long as possible on a rigged starting board!
+Thanks to [never stop building](https://www.neverstopbuilding.com/blog/minimax) for help improving the minimax algorithm, so that it delays losing for as long as possible on a rigged starting board!
