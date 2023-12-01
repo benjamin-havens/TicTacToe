@@ -12,6 +12,7 @@ def TicTacToeCriterion(player, current_evaluation, old_best):
     return current_evaluation > old_best if player == X else current_evaluation < old_best
 
 
+@cache
 def get_best_tictactoe_move(board: TicTacToeBoard):
     assert not board.is_game_over, "Attempted to get best move in a finished game."
 
