@@ -12,3 +12,6 @@ O = TicTacToeSquareValues.O
 TIC_TAC_TOE_DISPLAY = {TicTacToeSquareValues.EMPTY.value: " ",
                        TicTacToeSquareValues.X.value: "X",
                        TicTacToeSquareValues.O.value: "O"}
+
+X_WINNING = 10
+O_WINNING = -10
