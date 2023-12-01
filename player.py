@@ -52,6 +52,7 @@ class TicTacToeGamePlayer:
             self._maybe_print(f"Player {self.board.winning_player.name} wins!", clear=False)
         else:
             self._maybe_print("It's a tie!", clear=False)
+        return self.board.winning_player, self.board.n_empty()
 
     def _maybe_print(self, s, clear=True):
         if not self.silent:
