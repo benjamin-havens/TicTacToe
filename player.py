@@ -1,5 +1,6 @@
 from board import TicTacToeBoard
 from printing_utils import require_input_and_clear
+from strategies.PPO import TicTacToePPO
 from strategies.human import get_human_tictactoe_move
 from strategies.minimax import get_best_tictactoe_move
 
@@ -63,5 +64,6 @@ class TicTacToeGamePlayer:
 
 
 if __name__ == "__main__":
-    player = TicTacToeGamePlayer(player_O=get_best_tictactoe_move, player_X_name="Human", player_O_name="MiniMax")
-    player.play()
+    # game_player = TicTacToeGamePlayer(player_O=get_best_tictactoe_move, player_X_name="Human", player_O_name="MiniMax")
+    game_player = TicTacToeGamePlayer(player_X=get_best_tictactoe_move, player_O=TicTacToePPO().get_move, player_X_name="MiniMax", player_O_name="PPO")
+    game_player.play()
