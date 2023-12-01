@@ -54,6 +54,7 @@ class TicTacToeGamePlayer:
             self.board.play_move(*move)
             player, next_player = next_player, player
         self._maybe_print(f"Player {self.board.winning_player.name} wins!")
+        self.board.reset()
 
     def _maybe_print(self, s):
         if not self.silent:
