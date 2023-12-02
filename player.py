@@ -28,6 +28,10 @@ class TicTacToeGamePlayer:
         self.silent = silent
         self.board = TicTacToeBoard()
 
+    def swap_X_and_O(self):
+        self.player_X, self.player_O = self.player_O, self.player_X
+        self.player_X_name, self.player_O_name = self.player_O_name, self.player_X_name
+
     def play(self):
         self.board.reset()
         # Make rules clear.
@@ -65,5 +69,18 @@ class TicTacToeGamePlayer:
 
 if __name__ == "__main__":
     # game_player = TicTacToeGamePlayer(player_O=get_best_tictactoe_move, player_X_name="Human", player_O_name="MiniMax")
-    game_player = TicTacToeGamePlayer(player_X=get_best_tictactoe_move, player_O=TicTacToePPO().get_move, player_X_name="MiniMax", player_O_name="PPO")
+    import torch
+
+    game_player = TicTacToeGamePlayer(player_X=get_best_tictactoe_move,
+                                      player_O=TicTacToePPO(silent_training=False, device=torch.device("mps")).get_move,
+                                      player_X_name="MiniMax", player_O_name="PPO", silent=True)
     game_player.play()
+    print(game_player.board.winning_player)
+    print(game_player.board)
+    print(game_player.board.move_history)
+
+    game_player.swap_X_and_O()
+    game_player.play()
+    print(game_player.board.winning_player)
+    print(game_player.board)
+    print(game_player.board.move_history)
