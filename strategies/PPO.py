@@ -91,11 +91,11 @@ class TicTacToePPOTrainer:
             for states, actions, old_action_dists, total_discounted_rewards in dataloader:
                 states = states.long().to(self.device)
                 actions = actions.unsqueeze(0).to(self.device)
-                old_action_dists = old_action_dists.squeeze(0).float().to(self.device)
+                old_action_dists = old_action_dists.squeeze(1).float().to(self.device)
                 total_discounted_rewards = total_discounted_rewards.float().to(self.device)
 
                 # Calculate value loss
-                values = self.value_network(states).squeeze(0)
+                values = self.value_network(states).squeeze(1)
                 value_loss = self.value_criterion(total_discounted_rewards, values)
 
                 # Calculate policy loss
@@ -116,12 +116,13 @@ class TicTacToePPOTrainer:
 
     def train_PPO_for_tictactoe(self,
                                 epochs,
-                                policy_epochs=5,
-                                n_games_per_epoch=50,
+                                policy_epochs=10,
+                                n_games_per_epoch=500,
                                 opponent=get_best_tictactoe_move,
                                 lr=3e-4,
                                 gamma=0.9,
                                 epsilon=0.2,
+                                batch_size=500,
                                 silent=True):
         optimizer = torch.optim.Adam(chain(self.policy_network.parameters(), self.value_network.parameters()),
                                      lr=lr)
@@ -170,14 +171,14 @@ class TicTacToePPOTrainer:
 
             # Learn from experience
             dataset = ListDataset(self.memory)
-            dataloader = DataLoader(dataset)
+            dataloader = DataLoader(dataset, batch_size=batch_size)
             self._learn_ppo(optimizer, dataloader, epsilon, policy_epochs)
 
 class TicTacToePPO:
-    def __init__(self, device=torch.device("cpu")):
+    def __init__(self, device=torch.device("cpu"), silent_training=True):
         self.device = device
         trainer = TicTacToePPOTrainer(device)
-        trainer.train_PPO_for_tictactoe(epochs=10)
+        trainer.train_PPO_for_tictactoe(epochs=10, silent=silent_training)
         self.net = trainer.policy_network
         self.net.eval()
 
