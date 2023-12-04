@@ -92,7 +92,7 @@ class TwoPlayerGame:
     def play_in_terminal(self):
         self.board.reset()
         self._maybe_print("Press enter at each stage to move on.\n"
-                          f"Beginning a game of {self.board.name} between {self.player_1.name} and {self.player_2.name}!\n\n",
+                          f"Beginning a game of {self.board.name} between {self.player_1.name} and {self.player_2.name}!\n",
                           clear=False)
 
         # Main game loop
