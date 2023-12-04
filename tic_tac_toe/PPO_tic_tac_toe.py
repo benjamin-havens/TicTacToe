@@ -5,9 +5,9 @@ from torch import nn
 from torch.utils.data import DataLoader, Dataset
 from tqdm import trange
 
-from board import TicTacToeBoard
-from constants import X, O
-from strategies.minimax import get_best_tictactoe_move
+from two_player_game import TwoPlayerGameAgent
+from .minimax_tic_tac_toe import TicTacToeMiniMaxAgent
+from .tic_tac_toe_game import TicTacToeBoard, TicTacToeMove, X, O
 
 
 class DiscreteStatePolicyMLP(nn.Module):
@@ -118,7 +118,7 @@ class TicTacToePPOTrainer:
                                 epochs,
                                 policy_epochs=10,
                                 n_games_per_epoch=500,
-                                opponent=get_best_tictactoe_move,
+                                opponent=TicTacToeMiniMaxAgent("").get_move,
                                 lr=3e-4,
                                 gamma=0.9,
                                 epsilon=0.2,
@@ -139,15 +139,15 @@ class TicTacToePPOTrainer:
                     while not self.board.is_game_over:
                         # Handle opponent's first move as X
                         if self.board.next_player != player:
-                            opponent_row, opponent_column = opponent(self.board)
-                            self.board.play_move(opponent_row, opponent_column)
+                            opponent_move = opponent(self.board)
+                            self.board.play_move(opponent_move)
                             continue
 
                         # Play a move
                         row, column, action_dist = self._get_move()
                         state = hash(self.board)
                         try:
-                            self.board.play_move(row, column)
+                            self.board.play_move(TicTacToeMove(row, column))
                         # Major negative penalty if invalid move
                         except AssertionError:
                             reward = -15
@@ -157,8 +157,8 @@ class TicTacToePPOTrainer:
                                 reward = 0 if self.board.winning_player is None else 10 - self.board.depth()
                             # If not, let the opponent move and check the score
                             else:
-                                opponent_row, opponent_column = opponent(self.board)
-                                self.board.play_move(opponent_row, opponent_column)
+                                opponent_move = opponent(self.board)
+                                self.board.play_move(opponent_move)
                                 if not self.board.is_game_over:
                                     reward = 0
                                 else:
@@ -174,8 +174,10 @@ class TicTacToePPOTrainer:
             dataloader = DataLoader(dataset, batch_size=batch_size)
             self._learn_ppo(optimizer, dataloader, epsilon, policy_epochs)
 
-class TicTacToePPO:
-    def __init__(self, device=torch.device("cpu"), silent_training=True):
+
+class TicTacToePPOAgent(TwoPlayerGameAgent):
+    def __init__(self, name, device=torch.device("cpu"), silent_training=True):
+        self.name = name
         self.device = device
         trainer = TicTacToePPOTrainer(device)
         trainer.train_PPO_for_tictactoe(epochs=10, silent=silent_training)
@@ -186,12 +188,13 @@ class TicTacToePPO:
         with torch.inference_mode():
             state = torch.tensor([hash(board)]).long().to(self.device)
             distribution = self.net(state).flatten()
-            valid_moves = [3*r + c for r, c in board.get_possible_moves()]
+            valid_moves = [3 * move.row + move.column for move in board.get_possible_moves()]
             for move in range(9):
                 if move not in valid_moves:
                     distribution[move] = 0.0
             action = int(torch.multinomial(distribution, num_samples=1))
-            return action // 3, action % 3
+            return TicTacToeMove(action // 3, action % 3)
+
 
 if __name__ == "__main__":
     trainer = TicTacToePPOTrainer(device=torch.device("cpu"))

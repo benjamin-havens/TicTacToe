@@ -2,7 +2,7 @@ import numpy as np
 
 from minimax import minimax
 from two_player_game import TwoPlayerGameAgent
-from ..tic_tac_toe_game import TicTacToeBoard, X, O
+from .tic_tac_toe_game import TicTacToeBoard, X, O
 
 
 class TicTacToeMiniMaxAgent(TwoPlayerGameAgent):

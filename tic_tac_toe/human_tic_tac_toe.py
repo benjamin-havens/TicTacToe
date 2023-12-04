@@ -1,6 +1,6 @@
 from printing_utils import require_input_and_clear
-from ..tic_tac_toe_game import TicTacToeMove, TicTacToeBoard
 from two_player_game import TwoPlayerGameAgent
+from .tic_tac_toe_game import TicTacToeMove, TicTacToeBoard
 
 
 class TicTacToeHumanAgent(TwoPlayerGameAgent):
