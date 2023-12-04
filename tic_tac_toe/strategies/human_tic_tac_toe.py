@@ -18,7 +18,7 @@ class TicTacToeHumanAgent(TwoPlayerGameAgent):
             try:
                 user_row, user_column = int(user_row), int(user_column)
             except ValueError:
-                require_input_and_clear("Invalid entry: enter integers between 1 and 3. Press enter to continue.)")
+                require_input_and_clear("Invalid entry: enter integers between 1 and 3. Press enter to continue.")
                 continue
 
             # Check valid moves

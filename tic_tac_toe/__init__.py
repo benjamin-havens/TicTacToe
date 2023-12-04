@@ -1,2 +1,3 @@
-from tic_tac_toe.strategies.human_tic_tac_toe import TicTacToeHumanAgent
-from tic_tac_toe.tic_tac_toe_game import TicTacToeMove, TicTacToeBoard, X, O, EMPTY, WINNING_SCORE
+from .strategies.human_tic_tac_toe import TicTacToeHumanAgent
+from .strategies.minimax_tic_tac_toe import TicTacToeMiniMaxAgent
+from .tic_tac_toe_game import TicTacToeMove, TicTacToeBoard, X, O, EMPTY, WINNING_SCORE

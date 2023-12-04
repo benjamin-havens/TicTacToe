@@ -22,6 +22,8 @@ TIC_TAC_TOE_DISPLAY = {TicTacToeSquareValues.EMPTY.value: " ",
                        TicTacToeSquareValues.O.value: "O"}
 
 WINNING_SCORE = 10
+
+
 # END CONSTANTS
 
 
@@ -31,11 +33,17 @@ class TicTacToeMove(TwoPlayerGameMove):
         self.column = column
 
     def __str__(self):
-        return str((self.row, self.column))
+        return str((self.row + 1, self.column + 1))
+
+    def __eq__(self, other):
+        if not isinstance(other, TicTacToeMove):
+            return False
+        return self.row == other.row and self.column == other.column
 
 
 class TicTacToeBoard(TwoPlayerGameBoard):
     def __init__(self):
+        self.name = "Tic-tac-toe"
         self.state = None
         self.next_player = None
         self.next_next_player = None

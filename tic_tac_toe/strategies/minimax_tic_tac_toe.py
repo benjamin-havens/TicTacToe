@@ -1,7 +1,7 @@
 import numpy as np
 
 from minimax import minimax
-from tic_tac_toe import TicTacToeBoard, X, O
+from ..tic_tac_toe_game import TicTacToeBoard, X, O
 from two_player_game import TwoPlayerGameAgent
 
 
