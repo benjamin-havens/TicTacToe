@@ -29,8 +29,8 @@ WINNING_SCORE = 10
 
 class TicTacToeMove(TwoPlayerGameMove):
     def __init__(self, row, column):
-        self.row = row
-        self.column = column
+        self.row = int(row)
+        self.column = int(column)
 
     def __str__(self):
         return str((self.row + 1, self.column + 1))
@@ -205,7 +205,7 @@ if __name__ == "__main__":
 
     # Play X in the bottom right (X should win here)
     board.play_move(TicTacToeMove(2, 2))
-    assert board.winning_player == X
+    assert board.winning_player == "X"
     print(board)
 
     # Try to play a move after the game is over
@@ -218,7 +218,7 @@ if __name__ == "__main__":
 
     # Undo a few moves and print
     board.undo_move()
-    assert board.winning_player is None
+    assert board.winning_player == ""
     board.undo_move()
     board.undo_move()
     print(board)
@@ -240,7 +240,7 @@ if __name__ == "__main__":
 
     # Play O in the bottom right (O should win)
     board.play_move(TicTacToeMove(2, 2))
-    assert board.winning_player == O
+    assert board.winning_player == "O"
     print(board)
 
     # Load a given state and print
