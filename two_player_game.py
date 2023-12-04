@@ -50,20 +50,6 @@ class TwoPlayerGameBoard(ABC):
         raise NotImplementedError()
 
 
-class TwoPlayerGameBoardWithGUI(TwoPlayerGameBoard, ABC):
-    @abstractmethod
-    def initialize_GUI(self):
-        pass
-
-    @abstractmethod
-    def show_welcome(self):
-        pass
-
-    @abstractmethod
-    def show_winner(self):
-        pass
-
-
 class TwoPlayerGameAgent(ABC):
     name: str
 
@@ -92,61 +78,43 @@ class TwoPlayerGame:
         :param player_1_agent: TwoPlayerGameAgent which will receive a TwoPlayerGameBoard as input and should return
                             TwoPlayerGameMove. The onus is on the agent to ensure that the move is valid.
         :param player_2_agent: Similar to player_1_agent.
+        :param silent: If True, will not print anything as the game proceeds; else, will print moves and winning info.
+                        After printing something, it will wait for user input (eg, enter) to move on.
         """
         self.board = board
         self.player_1 = player_1_agent
         self.player_2 = player_2_agent
+        self.silent = silent
 
     def swap_player_1_and_player_2(self):
         self.player_1, self.player_2 = self.player_2, self.player_1
 
-    def play_in_terminal(self, silent=False):
+    def play_in_terminal(self):
         self.board.reset()
         self._maybe_print("Press enter at each stage to move on.\n"
                           f"Beginning a game of {self.board.name} between {self.player_1.name} and {self.player_2.name}!\n",
-                          silent=silent,
                           clear=False)
 
         # Main game loop
         player, next_player = self.player_1, self.player_2
         while not self.board.is_game_over:
             # Get and announce move
-            self._maybe_print(self.board, silent=silent)
+            self._maybe_print(self.board)
             move = player.get_move(self.board)
-            self._maybe_print(f"Player {player.name} played {move}.", silent=silent)
+            self._maybe_print(f"Player {player.name} played {move}.")
             self.board.play_move(move)
 
             # Swap roles
             player, next_player = next_player, player
 
-        self._maybe_print(self.board, clear=False, silent=silent)
+        self._maybe_print(self.board, clear=False)
         if self.board.winning_player != "":
-            self._maybe_print(f"Player {self.board.winning_player} wins!\n", silent=silent, clear=False)
+            self._maybe_print(f"Player {self.board.winning_player} wins!\n", clear=False)
         else:
-            self._maybe_print("It's a tie!\n", silent=silent, clear=False)
+            self._maybe_print("It's a tie!\n", clear=False)
 
-    def play_in_GUI(self):
-        assert isinstance(self.board,
-                          TwoPlayerGameBoardWithGUI), "The game board must have GUI functions implemented to play in GUI"
-        self.board.reset()
-        self.board.initialize_GUI()
-        self.board.show_welcome()
-
-        # Main game loop
-        player, next_player = self.player_1, self.player_2
-        while not self.board.is_game_over:
-            # Get and play move
-            move = player.get_move(self.board)
-            self.board.play_move(move)
-
-            # Swap roles
-            player, next_player = next_player, player
-
-        self.board.show_winner()
-
-    @staticmethod
-    def _maybe_print(s, silent=False, clear=True):
-        if not silent:
+    def _maybe_print(self, s, clear=True):
+        if not self.silent:
             if clear:
                 require_input_and_clear(s)
             else:
