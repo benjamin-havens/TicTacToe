@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+import time
 
 from printing_utils import require_input_and_clear
 
@@ -187,6 +188,7 @@ class TwoPlayerGame:
         player, next_player = self.player_1, self.player_2
         while not self.board.is_game_over:
             # Get and announce move
+            time.sleep(1)
             gui.update_display()
             move = player.get_move(self.board)
             gui.display_message(f"Player {player.name} played {move}.")

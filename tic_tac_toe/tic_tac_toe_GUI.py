@@ -129,9 +129,6 @@ class TicTacToeGUI(TwoPlayerGameGUI):
 
         pygame.display.update()
 
-        # Wait for half a second
-        pygame.time.delay(500)
-
     def clear(self):
         self.board.reset()
         self.reset()
