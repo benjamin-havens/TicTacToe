@@ -109,9 +109,9 @@ class TwoPlayerGame:
 
         self._maybe_print(self.board, clear=False)
         if self.board.winning_player != "":
-            self._maybe_print(f"Player {self.board.winning_player} wins!", clear=False)
+            self._maybe_print(f"Player {self.board.winning_player} wins!\n", clear=False)
         else:
-            self._maybe_print("It's a tie!", clear=False)
+            self._maybe_print("It's a tie!\n", clear=False)
 
     def _maybe_print(self, s, clear=True):
         if not self.silent:
