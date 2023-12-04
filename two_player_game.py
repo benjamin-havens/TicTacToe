@@ -92,7 +92,7 @@ class TwoPlayerGame:
     def play_in_terminal(self):
         self.board.reset()
         self._maybe_print("Press enter at each stage to move on.\n"
-                          f"Beginning a game of {self.board.name} between {self.player_1.name} and {self.player_1.name}!\n\n",
+                          f"Beginning a game of {self.board.name} between {self.player_1.name} and {self.player_2.name}!\n\n",
                           clear=False)
 
         # Main game loop
@@ -101,7 +101,7 @@ class TwoPlayerGame:
             # Get and announce move
             self._maybe_print(self.board)
             move = player.get_move(self.board)
-            self._maybe_print(f"Player {player.name} chose to play {move}.")
+            self._maybe_print(f"Player {player.name} played {move}.")
             self.board.play_move(move)
 
             # Swap roles

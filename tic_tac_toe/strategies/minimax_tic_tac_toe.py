@@ -1,8 +1,8 @@
 import numpy as np
 
 from minimax import minimax
-from ..tic_tac_toe_game import TicTacToeBoard, X, O
 from two_player_game import TwoPlayerGameAgent
+from ..tic_tac_toe_game import TicTacToeBoard, X, O
 
 
 class TicTacToeMiniMaxAgent(TwoPlayerGameAgent):
@@ -11,7 +11,7 @@ class TicTacToeMiniMaxAgent(TwoPlayerGameAgent):
         self.name = name
 
     def get_move(self, board: TicTacToeBoard):
-        evaluation, move = minimax(board, 0, board.next_player == X, float("-inf"), float("inf"))
+        evaluation, move = minimax(board, board.next_player == X)
         return move
 
 

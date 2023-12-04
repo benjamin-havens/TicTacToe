@@ -19,7 +19,7 @@ def _minimax_helper(board: TwoPlayerGameBoard, current_search_depth, is_maximizi
         best_move = None
         for candidate_move in board.get_possible_moves():
             board.play_move(candidate_move)
-            candidate_move_value, _ = minimax(board, current_search_depth + 1, not is_maximizing_player, alpha, beta,
+            candidate_move_value, _ = _minimax_helper(board, current_search_depth + 1, not is_maximizing_player, alpha, beta,
                                               max_depth)
             board.undo_move()
 
@@ -37,7 +37,7 @@ def _minimax_helper(board: TwoPlayerGameBoard, current_search_depth, is_maximizi
         best_move = None
         for candidate_move in board.get_possible_moves():
             board.play_move(candidate_move)
-            candidate_move_value, _ = minimax(board, current_search_depth + 1, not is_maximizing_player, alpha, beta,
+            candidate_move_value, _ = _minimax_helper(board, current_search_depth + 1, not is_maximizing_player, alpha, beta,
                                               max_depth)
             board.undo_move()
 
