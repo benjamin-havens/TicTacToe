@@ -196,10 +196,7 @@ class TwoPlayerGame:
             # Swap roles
             player, next_player = next_player, player
 
-        if self.board.winning_player != "":
-            gui.display_winner(self.board.winning_player)
-        else:
-            gui.display_message("It's a tie!\n")
+        gui.display_winner(self.board.winning_player)
         gui.await_exit()
 
     def _maybe_print(self, s, clear=True):

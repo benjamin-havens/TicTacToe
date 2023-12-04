@@ -6,13 +6,15 @@ from two_player_game import TwoPlayerGameGUI
 from .tic_tac_toe_game import TicTacToeBoard, TicTacToeMove, X, O
 
 # Constants
-WIDTH, HEIGHT = 600, 600
-LINE_WIDTH = min(WIDTH, HEIGHT) // 20
+BOARD_WIDTH, BOARD_HEIGHT = 600, 600
+TEXT_BOX_HEIGHT = BOARD_HEIGHT // 4
+SCREEN_WIDTH, SCREEN_HEIGHT = BOARD_WIDTH, BOARD_HEIGHT + TEXT_BOX_HEIGHT
+LINE_WIDTH = min(BOARD_WIDTH, BOARD_HEIGHT) // 20
 LINE_OFFSET = LINE_WIDTH * 2 / 3
 BOARD_ROWS = 3
 BOARD_COLS = 3
 O_LINE_WIDTH = LINE_WIDTH // 3
-O_CIRCLE_RADIUS = min(WIDTH, HEIGHT) / 6 - 2 * O_LINE_WIDTH
+O_CIRCLE_RADIUS = min(BOARD_WIDTH, BOARD_HEIGHT) / 6 - 2 * O_LINE_WIDTH
 X_LINE_WIDTH = LINE_WIDTH // 3
 X_OFFSET = 3 / 2 * LINE_OFFSET
 
@@ -28,38 +30,43 @@ class TicTacToeGUI(TwoPlayerGameGUI):
     def __init__(self, board: TicTacToeBoard):
         self.board = board
 
-        pygame.init()
         self.screen = None
         self.reset()
 
     def reset(self):
-        self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
+        pygame.init()
+        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         pygame.display.set_caption("Tic Tac Toe")
 
     def update_display(self):
-        # Clear the screen
-        self.screen.fill(BG_COLOR)
+        # Clear the board area
+        board_rect = pygame.Rect(0, 0, BOARD_WIDTH, BOARD_HEIGHT)
+        self.screen.fill(BG_COLOR, board_rect)
 
         # Draw board lines
-        pygame.draw.line(self.screen, LINE_COLOR, (LINE_OFFSET, HEIGHT / 3),
-                         (WIDTH - LINE_OFFSET, HEIGHT / 3), LINE_WIDTH)
-        pygame.draw.line(self.screen, LINE_COLOR, (LINE_OFFSET, HEIGHT * 2 / 3),
-                         (WIDTH - LINE_OFFSET, HEIGHT * 2 / 3), LINE_WIDTH)
-        pygame.draw.line(self.screen, LINE_COLOR, (WIDTH / 3, LINE_OFFSET),
-                         (WIDTH / 3, HEIGHT - LINE_OFFSET), LINE_WIDTH)
-        pygame.draw.line(self.screen, LINE_COLOR, (WIDTH * 2 / 3, LINE_OFFSET),
-                         (WIDTH * 2 / 3, HEIGHT - LINE_OFFSET), LINE_WIDTH)
+        pygame.draw.line(self.screen, LINE_COLOR, (LINE_OFFSET, BOARD_HEIGHT / 3),
+                         (BOARD_WIDTH - LINE_OFFSET, BOARD_HEIGHT / 3), LINE_WIDTH)
+        pygame.draw.line(self.screen, LINE_COLOR, (LINE_OFFSET, BOARD_HEIGHT * 2 / 3),
+                         (BOARD_WIDTH - LINE_OFFSET, BOARD_HEIGHT * 2 / 3), LINE_WIDTH)
+        pygame.draw.line(self.screen, LINE_COLOR, (BOARD_WIDTH / 3, LINE_OFFSET),
+                         (BOARD_WIDTH / 3, BOARD_HEIGHT - LINE_OFFSET), LINE_WIDTH)
+        pygame.draw.line(self.screen, LINE_COLOR, (BOARD_WIDTH * 2 / 3, LINE_OFFSET),
+                         (BOARD_WIDTH * 2 / 3, BOARD_HEIGHT - LINE_OFFSET), LINE_WIDTH)
 
         # Draw X's and O's
         for row, column in product(range(3), range(3)):
             if self.board.state[row, column] == X.value:
                 pygame.draw.line(self.screen, X_COLOR,
-                                 (column * WIDTH / 3 + X_OFFSET, (row + 1) * HEIGHT / 3 - X_OFFSET),
-                                 ((column + 1) * WIDTH / 3 - X_OFFSET, row * HEIGHT / 3 + X_OFFSET), X_LINE_WIDTH)
-                pygame.draw.line(self.screen, X_COLOR, (column * WIDTH / 3 + X_OFFSET, row * HEIGHT / 3 + X_OFFSET),
-                                 ((column + 1) * WIDTH / 3 - X_OFFSET, (row + 1) * HEIGHT / 3 - X_OFFSET), X_LINE_WIDTH)
+                                 (column * BOARD_WIDTH / 3 + X_OFFSET, (row + 1) * BOARD_HEIGHT / 3 - X_OFFSET),
+                                 ((column + 1) * BOARD_WIDTH / 3 - X_OFFSET, row * BOARD_HEIGHT / 3 + X_OFFSET),
+                                 X_LINE_WIDTH)
+                pygame.draw.line(self.screen, X_COLOR,
+                                 (column * BOARD_WIDTH / 3 + X_OFFSET, row * BOARD_HEIGHT / 3 + X_OFFSET),
+                                 ((column + 1) * BOARD_WIDTH / 3 - X_OFFSET, (row + 1) * BOARD_HEIGHT / 3 - X_OFFSET),
+                                 X_LINE_WIDTH)
             elif self.board.state[row, column] == O.value:
-                pygame.draw.circle(self.screen, O_COLOR, ((column + 1 / 2) * WIDTH / 3, (row + 1 / 2) * HEIGHT / 3),
+                pygame.draw.circle(self.screen, O_COLOR,
+                                   ((column + 1 / 2) * BOARD_WIDTH / 3, (row + 1 / 2) * BOARD_HEIGHT / 3),
                                    O_CIRCLE_RADIUS, O_LINE_WIDTH)
 
         # Update the display
@@ -72,7 +79,7 @@ class TicTacToeGUI(TwoPlayerGameGUI):
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     x, y = pygame.mouse.get_pos()
-                    move = TicTacToeMove(y // (HEIGHT / 3), x // (WIDTH / 3))
+                    move = TicTacToeMove(y // (BOARD_HEIGHT / 3), x // (BOARD_WIDTH / 3))
                     if move in self.board.get_possible_moves():
                         input_received = True
                         break
@@ -80,12 +87,28 @@ class TicTacToeGUI(TwoPlayerGameGUI):
         return move
 
     def display_winner(self, winner: str):
+        # Clear the text area
+        board_rect = pygame.Rect(0, BOARD_HEIGHT, BOARD_WIDTH, SCREEN_HEIGHT)
+        self.screen.fill(BG_COLOR, board_rect)
         # Display the winner on the screen
-        pass
+        font = pygame.font.Font(None, 72)  # Create a font object
+        text = font.render(f'{winner} Wins!', True, (0, 128, 0)) if winner else font.render('Tie Game!', True,
+                                                                                            (0, 128, 0))
+        text_rect = text.get_rect(center=(BOARD_WIDTH / 2, BOARD_HEIGHT + TEXT_BOX_HEIGHT / 2))
+        self.screen.blit(text, text_rect)  # Render the text on the screen
+        pygame.display.update()
 
     def display_message(self, message: str):
+        # Clear the text area
+        board_rect = pygame.Rect(0, BOARD_HEIGHT, BOARD_WIDTH, SCREEN_HEIGHT)
+        self.screen.fill(BG_COLOR, board_rect)
         # Use PyGame to display messages like "Player X's Turn"
-        pass
+        font = pygame.font.Font(None, 48)  # Smaller font than for the winner
+        text = font.render(message, True, (0, 0, 128))  # Blue text
+        text_rect = text.get_rect(
+            center=(BOARD_WIDTH / 2, BOARD_HEIGHT + TEXT_BOX_HEIGHT / 2))
+        self.screen.blit(text, text_rect)
+        pygame.display.update()
 
     def clear(self):
         self.board.reset()
