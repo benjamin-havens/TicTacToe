@@ -11,7 +11,7 @@ def minimax(board, is_maximizing_player, max_depth=float("inf")):
 @cache
 def _minimax_helper(board: TwoPlayerGameBoard, current_search_depth, is_maximizing_player, alpha, beta,
                     max_depth=float("inf")):
-    if board.is_game_over or (max_depth is not None and current_search_depth >= max_depth):
+    if board.is_game_over or current_search_depth >= max_depth:
         return board.static_evaluation(), None
 
     if is_maximizing_player:
@@ -19,8 +19,9 @@ def _minimax_helper(board: TwoPlayerGameBoard, current_search_depth, is_maximizi
         best_move = None
         for candidate_move in board.get_possible_moves():
             board.play_move(candidate_move)
-            candidate_move_value, _ = _minimax_helper(board, current_search_depth + 1, not is_maximizing_player, alpha, beta,
-                                              max_depth)
+            candidate_move_value, _ = _minimax_helper(board, current_search_depth + 1, not is_maximizing_player, alpha,
+                                                      beta,
+                                                      max_depth)
             board.undo_move()
 
             if candidate_move_value > best_outcome:
@@ -37,8 +38,9 @@ def _minimax_helper(board: TwoPlayerGameBoard, current_search_depth, is_maximizi
         best_move = None
         for candidate_move in board.get_possible_moves():
             board.play_move(candidate_move)
-            candidate_move_value, _ = _minimax_helper(board, current_search_depth + 1, not is_maximizing_player, alpha, beta,
-                                              max_depth)
+            candidate_move_value, _ = _minimax_helper(board, current_search_depth + 1, not is_maximizing_player, alpha,
+                                                      beta,
+                                                      max_depth)
             board.undo_move()
 
             if candidate_move_value < best_outcome:
