@@ -181,7 +181,7 @@ class TwoPlayerGame:
         self.board.reset()
         gui.clear()
         gui.display_message(
-            f"Beginning a game of {self.board.name} between {self.player_1.name} and {self.player_2.name}!\n")
+            f"Beginning a game of {self.board.name} between {self.player_1.name} and {self.player_2.name}!")
 
         # Main game loop
         player, next_player = self.player_1, self.player_2

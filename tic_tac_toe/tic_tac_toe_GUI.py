@@ -100,15 +100,37 @@ class TicTacToeGUI(TwoPlayerGameGUI):
 
     def display_message(self, message: str):
         # Clear the text area
-        board_rect = pygame.Rect(0, BOARD_HEIGHT, BOARD_WIDTH, SCREEN_HEIGHT)
-        self.screen.fill(BG_COLOR, board_rect)
-        # Use PyGame to display messages like "Player X's Turn"
-        font = pygame.font.Font(None, 48)  # Smaller font than for the winner
-        text = font.render(message, True, (0, 0, 128))  # Blue text
-        text_rect = text.get_rect(
-            center=(BOARD_WIDTH / 2, BOARD_HEIGHT + TEXT_BOX_HEIGHT / 2))
-        self.screen.blit(text, text_rect)
+        text_area_rect = pygame.Rect(0, BOARD_HEIGHT, BOARD_WIDTH, TEXT_BOX_HEIGHT)
+        self.screen.fill(BG_COLOR, text_area_rect)
+
+        font = pygame.font.Font(None, 48)  # Font for the message
+        max_line_width = BOARD_WIDTH - 20  # Maximum width for a line, with some margin
+
+        # Split message into lines if it's too long
+        words = message.split(' ')
+        lines = []
+        current_line = ''
+        for word in words:
+            # Check if adding the next word exceeds the line width
+            if font.size(current_line + word)[0] <= max_line_width:
+                current_line += word + ' '
+            else:
+                lines.append(current_line)
+                current_line = word + ' '
+        lines.append(current_line)  # Add the last line
+
+        # Display each line of the message
+        line_height = font.get_height()
+        start_y = BOARD_HEIGHT + (TEXT_BOX_HEIGHT - line_height * len(lines)) / 2
+        for i, line in enumerate(lines):
+            text = font.render(line, True, (0, 0, 128))  # Blue text
+            text_rect = text.get_rect(center=(BOARD_WIDTH / 2, start_y + i * line_height))
+            self.screen.blit(text, text_rect)
+
         pygame.display.update()
+
+        # Wait for half a second
+        pygame.time.delay(500)
 
     def clear(self):
         self.board.reset()
