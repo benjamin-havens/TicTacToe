@@ -1,9 +1,10 @@
 from printing_utils import require_input_and_clear
 from two_player_game import TwoPlayerGameAgent
+from .tic_tac_toe_GUI import TicTacToeGUI
 from .tic_tac_toe_game import TicTacToeMove, TicTacToeBoard
 
 
-class TicTacToeHumanAgent(TwoPlayerGameAgent):
+class TicTacToeHumanConsoleAgent(TwoPlayerGameAgent):
     def __init__(self, name):
         self.name = name
 
@@ -28,3 +29,12 @@ class TicTacToeHumanAgent(TwoPlayerGameAgent):
                 continue
 
             return user_move
+
+
+class TicTacToeHumanGUIAgent(TwoPlayerGameAgent):
+    def __init__(self, name, gui: TicTacToeGUI):
+        self.name = name
+        self.gui = gui
+
+    def get_move(self, board: TicTacToeBoard):
+        return self.gui.get_user_move()
