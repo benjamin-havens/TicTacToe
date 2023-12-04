@@ -191,7 +191,7 @@ class TwoPlayerGame:
             time.sleep(1)
             gui.update_display()
             move = player.get_move(self.board)
-            gui.display_message(f"Player {player.name} played {move}.")
+            gui.display_message(f"{player.name} played {move}.")
             self.board.play_move(move)
             gui.update_display()
 
