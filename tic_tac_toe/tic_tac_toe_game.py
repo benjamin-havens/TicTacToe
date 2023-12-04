@@ -139,14 +139,17 @@ class TicTacToeBoard(TwoPlayerGameBoard):
         self.next_player, self.next_next_player = self.next_next_player, self.next_player
 
     def __str__(self):
-        s = "\n|‾‾‾|‾‾‾|‾‾‾|\n"
+        # \u203e is an overscore
+        grid_row = ("|" + 3 * "\u203e") * 3 + "|"
+        all_overscores = "\u203e" * 13
+        s = "\n" + grid_row + "\n"
         for row in range(3):
             for column in range(3):
                 s += "| "
                 s += TIC_TAC_TOE_DISPLAY[self.state[row, column]]
                 s += " "
             s += "|\n"
-            s += "|‾‾‾|‾‾‾|‾‾‾|\n" if row < 2 else "‾‾‾‾‾‾‾‾‾‾‾‾‾"
+            s += grid_row + "\n" if row < 2 else all_overscores
         s += "\n"
         return s
 
